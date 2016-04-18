@@ -56,14 +56,44 @@ class Board
     x, y = pos
     @grid[x][y] = value
   end
-  private
 
-    # def inspect
-    #   @color.inspect
-    # end
+  # def render
+  #   classes = {
+  #     Rook => "r", Knight => "k", Bishop => "b", King => "K", Queen => "Q",
+  #     Pawn => "p"
+  #   }
+  #   puts "  #{('A'..'H').to_a.join(" ")}"
+  #
+  #   grid.each_with_index do |row, i|
+  #     array = row.map { |piece| classes[piece.class] }.join(" ")
+  #     puts "#{i} #{array}"
+  #   end
+  #
+  # end
+
+  def checkmate?
+    false
+  end
+
+  def rows
+    @grid
+  end
+
+  def in_bounds?(pos)
+   pos.all? { |x| x.between?(0, 7) }
+  end
+
+  def mark(pos)
+    byebug
+    x, y = pos
+    @grid[x][y] = Piece.new
+  end
+
 end
 
-board = Board.new
-board.setup
-
-p board.grid
+# board = Board.new
+# board.setup
+# board.render
+# p board.grid
+# input = STDIN.getch
+# puts input
