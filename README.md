@@ -1,2 +1,5 @@
 # Chess
-=============Chess in Linux Terminal[Alt text](https://github.com/VictorAceChen/Chess/blob/master/Sample.png "Optional title")
+=============
+Chess in Linux terminal
+
+![Alt text](https://github.com/VictorAceChen/Chess/blob/master/Sample.png "Optional title")
