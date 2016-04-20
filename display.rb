@@ -17,7 +17,6 @@ class Display
   def build_grid
     @board.rows.map.with_index do |row, i|
       build_row(row, i)
-      # puts row
     end
   end
 
@@ -25,27 +24,46 @@ class Display
     row.map.with_index do |piece, j|
       color_options = colors_for(i, j)
       chars = piece.nil? ? " " : piece.to_s
+      chars = " #{chars} "
       chars.colorize(color_options)
-      # p "test_string".colorize(color_options)
     end
   end
 
   def colors_for(i, j)
-    if [i, j] == @cursor_pos
-      bg = :light_red
-    elsif (i + j).odd? # gonna need something like this for piece color
-      bg = :cyan
-    # else
-    #   bg = :blue
-    end
-    { background: bg, color: :black }
+    mode = :default
+    bg = :white
+    color = :light_white
+    current_piece = @board[[i, j]]
+
+    bg = :light_black if (i + j).odd?
+    mode = :swap if [i, j] == @cursor_pos
+    mode = :blink if [i, j] == @board.marker
+    bg = :red if @board.valid_moves.include?([i,j])
+
+
+    color = :black if current_piece.nil? || current_piece.color == :black
+
+    { background: bg, color: color, mode: mode }
   end
 
   def render
     system("clear")
+    build_grid.each_with_index { |row, i| puts "#{i}║#{row.join("")}" }
+    puts " ╚════════════════════════"
+    puts "   #{('A'..'H').to_a.join("  ")}"
 
-    puts "  #{('A'..'H').to_a.join(" ")}"
-
-    build_grid.each_with_index { |row, i| puts "#{i} #{row.join(" ")}" }
+    puts "In Check" if @board.in_check?
+    # puts @board.in_check?.color
   end
 end
+
+# 8 ║♜ ♞ ♝ ♛ ♚ ♝ ♞ ♜
+# 7 ║♟ ♟ ♟ ♟ ♟ ♟ ♟ ♟
+# 6 ║… … … … … … … …
+# 5 ║… … … … … … … …
+# 4 ║… … … … … … … …
+# 3 ║… … ♘ … … … … …
+# 2 ║♙ ♙ ♙ ♙ ♙ ♙ ♙ ♙
+# 1 ║♖ … ♗ ♕ ♔ ♗ ♘ ♖
+# —╚═══════════════
+# ——a   b   c   d   e   f   g   h

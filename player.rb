@@ -10,7 +10,6 @@ class Player
     until result
       @display.render
       result = @display.get_input
-      result = true
     end
     result
   end

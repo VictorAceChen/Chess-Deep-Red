@@ -3,48 +3,45 @@ require_relative "piece.rb"
 
 class Board
   attr_accessor :grid
+  attr_reader :marker, :valid_moves
 
   def initialize
     @grid = Array.new(8) { Array.new(8) }
+    @marker = []
+    @valid_moves = []
   end
 
   def setup
-    self.new_back_row(:black)
-    self.new_back_row(:white)
-    self.new_front_row(:black)
-    self.new_front_row(:white)
+    [:black, :white].each do |color|
+    self.new_back_row(color)
+    self.new_front_row(color)
+    end
+
   end
 
   def new_back_row(color)
-    row = color == :black ? 7 : 0
-    mold = [Rook, Knight, Bishop, King, Queen, Bishop, Knight, Rook]
+    row = color == :white ? 7 : 0
+    mold = [Rook, Knight, Bishop, Queen, King, Bishop, Knight, Rook]
 
     pieces_array = mold.map { |el| el.new(self, color) }
 
     pieces_array.each_with_index do |piece, idx|
-      piece.set_position = [row, idx]
+      piece.pos = [row, idx]
     end
 
     @grid[row] = pieces_array
-    # p pieces_array
   end
 
   def new_front_row(color)
-    row = color == :black ? 6 : 1
+    row = color == :white ? 6 : 1
     mold = [Pawn] * 8
 
     pieces_array = mold.map { |el| el.new(self, color) }
-
     pieces_array.each_with_index do |piece, idx|
-      piece.set_position = [row, idx]
+      piece.pos = [row, idx]
     end
 
     @grid[row] = pieces_array
-  end
-
-  def move(start, end_pos)
-
-    # render
   end
 
   def [](pos)
@@ -55,21 +52,28 @@ class Board
   def []=(pos, value)
     x, y = pos
     @grid[x][y] = value
+    value.pos = pos unless value.nil?
   end
 
-  # def render
-  #   classes = {
-  #     Rook => "r", Knight => "k", Bishop => "b", King => "K", Queen => "Q",
-  #     Pawn => "p"
-  #   }
-  #   puts "  #{('A'..'H').to_a.join(" ")}"
-  #
-  #   grid.each_with_index do |row, i|
-  #     array = row.map { |piece| classes[piece.class] }.join(" ")
-  #     puts "#{i} #{array}"
-  #   end
-  #
-  # end
+  def player_possible_moves(color)
+    pieces = @grid.flatten.select{ |piece| !pieces.nil? && piece.color == color }
+    moves = []
+    pieces.each { |piece| moves += pieces.valid_moves }
+    moves
+  end
+
+  def deep_dup
+    # self.instance_variables
+  end
+
+  def in_check?
+    all_pieces = @grid.flatten.select{ |piece| !piece.nil? }
+    king_positions = all_pieces.select{ |piece| piece.class == King }.map{ |king| king.pos }
+    all_attacks = []
+    all_pieces.each{ |piece| all_attacks += piece.valid_moves }
+    king_positions.each{ |king_pos| return true if all_attacks.include?(king_pos) }
+    false
+  end
 
   def checkmate?
     false
@@ -84,16 +88,21 @@ class Board
   end
 
   def mark(pos)
-    byebug
-    x, y = pos
-    @grid[x][y] = Piece.new
+    # byebug
+    if @marker.empty? #choosing from position
+      return if self[pos].nil? #ignore choosing empty space
+      @marker = pos
+      @valid_moves = self[pos].valid_moves
+
+    else #choosing to pos to move to
+      if @valid_moves.include?(pos)
+        self[pos] = self[@marker]
+        self[@marker] = nil unless pos == @marker
+      end
+      @marker.clear
+      @valid_moves.clear
+    end
+
   end
 
 end
-
-# board = Board.new
-# board.setup
-# board.render
-# p board.grid
-# input = STDIN.getch
-# puts input
