@@ -28,18 +28,22 @@ class Display
   end
 
   def colors_for_pos(i, j)
+    # default colors and settings
     mode = :default
     bg = :white
     color = :light_white
     current_piece = @board[[i, j]]
 
+    # color for checker pattern
     bg = :light_black if (i + j).odd?
+
+    #colors for selection state
     mode = :swap if [i, j] == @cursor_pos
     mode = :blink if [i, j] == @board.marker
     bg = :red if @board.valid_moves.include?([i,j])
-
     color = :black if current_piece.nil? || current_piece.color == :black
 
+    #set the color
     { background: bg, color: color, mode: mode }
   end
 

@@ -17,29 +17,24 @@ class Board
     end
   end
 
-  def new_back_row(color)
-    row = color == :white ? 7 : 0
-    mold = [Rook, Knight, Bishop, Queen, King, Bishop, Knight, Rook]
-
+  def generate_row(mold, color, row)
     pieces_array = mold.map { |el| el.new(self, color) }
-
     pieces_array.each_with_index do |piece, idx|
       piece.pos = [row, idx]
     end
+    pieces_array
+  end
 
-    @grid[row] = pieces_array
+  def new_back_row(color)
+    row = color == :white ? 7 : 0
+    mold = [Rook, Knight, Bishop, Queen, King, Bishop, Knight, Rook]
+    @grid[row] = generate_row(mold, color, row)
   end
 
   def new_front_row(color)
     row = color == :white ? 6 : 1
     mold = [Pawn] * 8
-
-    pieces_array = mold.map { |el| el.new(self, color) }
-    pieces_array.each_with_index do |piece, idx|
-      piece.pos = [row, idx]
-    end
-
-    @grid[row] = pieces_array
+    @grid[row] = generate_row(mold, color, row)
   end
 
   def [](pos)
