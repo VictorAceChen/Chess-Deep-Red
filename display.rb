@@ -22,14 +22,14 @@ class Display
 
   def build_row(row, i)
     row.map.with_index do |piece, j|
-      color_options = colors_for(i, j)
+      color_options = colors_for_pos(i, j)
       chars = piece.nil? ? " " : piece.to_s
       chars = " #{chars} "
       chars.colorize(color_options)
     end
   end
 
-  def colors_for(i, j)
+  def colors_for_pos(i, j)
     mode = :default
     bg = :white
     color = :light_white
@@ -39,7 +39,6 @@ class Display
     mode = :swap if [i, j] == @cursor_pos
     mode = :blink if [i, j] == @board.marker
     bg = :red if @board.valid_moves.include?([i,j])
-
 
     color = :black if current_piece.nil? || current_piece.color == :black
 
@@ -53,17 +52,5 @@ class Display
     puts "   #{('A'..'H').to_a.join("  ")}"
 
     puts "In Check" if @board.in_check?
-    # puts @board.in_check?.color
   end
 end
-
-# 8 ║♜ ♞ ♝ ♛ ♚ ♝ ♞ ♜
-# 7 ║♟ ♟ ♟ ♟ ♟ ♟ ♟ ♟
-# 6 ║… … … … … … … …
-# 5 ║… … … … … … … …
-# 4 ║… … … … … … … …
-# 3 ║… … ♘ … … … … …
-# 2 ║♙ ♙ ♙ ♙ ♙ ♙ ♙ ♙
-# 1 ║♖ … ♗ ♕ ♔ ♗ ♘ ♖
-# —╚═══════════════
-# ——a   b   c   d   e   f   g   h

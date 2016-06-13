@@ -1,5 +1,4 @@
-require "byebug"
-require_relative "piece.rb"
+require_relative "pieces/piece.rb"
 
 class Board
   attr_accessor :grid
@@ -62,13 +61,12 @@ class Board
     moves
   end
 
-  def deep_dup
-    # self.instance_variables
-  end
-
   def in_check?
+    # get position of thet kings
     all_pieces = @grid.flatten.select{ |piece| !piece.nil? }
     king_positions = all_pieces.select{ |piece| piece.class == King }.map{ |king| king.pos }
+
+    #check if a king is within an attack position
     all_attacks = []
     all_pieces.each{ |piece| all_attacks += piece.valid_moves }
     king_positions.each{ |king_pos| return true if all_attacks.include?(king_pos) }
@@ -88,13 +86,12 @@ class Board
   end
 
   def mark(pos)
-    # byebug
     if @marker.empty? #choosing from position
       return if self[pos].nil? #ignore choosing empty space
       @marker = pos
       @valid_moves = self[pos].valid_moves
 
-    else #choosing to pos to move to
+    else #choosing pos to move to
       if @valid_moves.include?(pos)
         self[pos] = self[@marker]
         self[@marker] = nil unless pos == @marker
@@ -102,7 +99,6 @@ class Board
       @marker.clear
       @valid_moves.clear
     end
-
   end
 
 end

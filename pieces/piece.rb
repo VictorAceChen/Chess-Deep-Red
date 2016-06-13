@@ -1,6 +1,3 @@
-require "byebug"
-
-
 class Piece
   PIECEMAP = {
     "Rook" => "♜",
@@ -27,8 +24,8 @@ class Piece
 
   def valid_direction(directions)
     return [] if directions.empty? || @pos.empty?
-    # byebug
     x, y = @pos
+
     directions = directions.map{ |arr| [arr.last + x,arr.first + y] } #from current piece position
     directions = directions.select{ |arr| arr.first.between?(0,7) && arr.last.between?(0,7) } #remove out of bounds
     directions.select{ |arr| !friendly?(arr) }
@@ -129,7 +126,6 @@ class Pawn < Piece
     x, y = @pos
     return [] if (x == 7 && color == :black) || (x == 0 && color == :white)
     upDown = color == :black ? 1 : -1
-# byebug
     directions = []
       walk = [x + upDown, y]
       if @board[walk].nil?
