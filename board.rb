@@ -1,4 +1,4 @@
-require_relative "pieces/piece.rb"
+require_relative "pieces/_pieces.rb"
 
 class Board
   attr_accessor :grid
@@ -15,7 +15,6 @@ class Board
     self.new_back_row(color)
     self.new_front_row(color)
     end
-
   end
 
   def new_back_row(color)

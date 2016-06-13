@@ -1,12 +1,10 @@
 require "colorize"
-
 require "io/console"
 require_relative "board"
 require_relative "cursorable"
 
 class Display
   include Cursorable
-
 
   def initialize(board)
     @board = board
