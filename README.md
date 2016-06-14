@@ -1,4 +1,4 @@
-# Chess
+# Chess-Deep-Red
 =============
 Chess in Linux terminal
 
